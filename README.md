@@ -2,17 +2,36 @@
 
 A chatbot solution leveraging Neo4j, FastAPI, and Streamlit to provide natural language processing-based querying of hospital data.
 
-## Chatbot Interface
-
-### Prerequisites
+## Prerequisites
 - Python 3.8 or higher
-- Docker
+- Docker Desktop
 - OpenAI API Key
+- Git
 
-### Setup Instructions
+## Installation and Setup
 
-#### 1. Initial Configuration
-Begin by cloning the repository and navigating to its root directory. Create a `.env` file with the following details:
+### Clone the Repository
+```bash
+git clone https://github.com/TahirRida/RAG-Chatbot
+cd RAG-Chatbot
+```
+
+### Create and Activate a Virtual Environment
+```bash
+python -m venv venv
+# On Windows:
+./venv/Scripts/activate
+# On Unix or MacOS:
+source venv/bin/activate
+```
+
+### Install Required Packages
+```bash
+pip install -r requirements.txt
+```
+
+### Create an Environment Configuration File
+Create a `.env` file in the root directory with the following content:
 
 ```env
 OPENAI_API_KEY="Your OpenAI API Key"
@@ -22,7 +41,7 @@ NEO4J_URI=bolt://localhost:7687
 NEO4J_USERNAME=neo4j
 NEO4J_PASSWORD=password
 
-# Data Source URLs
+# Data Source Paths
 HOSPITALS_CSV_PATH=https://raw.githubusercontent.com/hfhoffman1144/langchain_neo4j_rag_app/main/data/hospitals.csv
 PAYERS_CSV_PATH=https://raw.githubusercontent.com/hfhoffman1144/langchain_neo4j_rag_app/main/data/payers.csv
 PHYSICIANS_CSV_PATH=https://raw.githubusercontent.com/hfhoffman1144/langchain_neo4j_rag_app/main/data/physicians.csv
@@ -39,75 +58,75 @@ HOSPITAL_QA_MODEL=gpt-3.5-turbo-0125
 CHATBOT_URL=http://host.docker.internal:8000/hospital-rag-agent
 ```
 
-Update this file with your OpenAI API Key and adjust the Neo4j credentials to align with the docker command used in the next steps.
+Update this file with your OpenAI API Key and adjust the Neo4j credentials to match the configuration used in subsequent steps.
 
-#### 2. Setting Up the Python Environment
-Create and activate a virtual environment:
+## Setting Up Neo4j
 
-```bash
-python -m venv venv
-# For Windows:
-./venv/Scripts/activate
-# For Linux/Mac:
-source venv/bin/activate
-```
-
-Install the required dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
-#### 3. Configuring Neo4j
-Launch the Neo4j container with the APOC plugin:
-
+### Start Neo4j Container with APOC Plugin
 ```bash
 docker run --name neo4j-apoc \
-    -e NEO4J_AUTH=neo4j/password \
-    -p 7474:7474 -p 7687:7687 \
-    -e NEO4J_apoc_export_file_enabled=true \
-    -e NEO4J_apoc_import_file_enabled=true \
-    -e NEO4J_apoc_import_file_use__neo4j__config=true \
-    -e NEO4J_PLUGINS='["apoc"]' \
-    -e NEO4J_dbms_security_procedures_unrestricted=apoc.* \
-    -e NEO4J_dbms_security_procedures_allowlist=apoc.* \
-    neo4j:latest
+  -e NEO4J_AUTH=neo4j/password \
+  -p 7474:7474 -p 7687:7687 \
+  -e NEO4J_apoc_export_file_enabled=true \
+  -e NEO4J_apoc_import_file_enabled=true \
+  -e NEO4J_apoc_import_file_use_neo4j_config=true \
+  -e NEO4J_PLUGINS='["apoc"]' \
+  -e NEO4J_dbms_security_procedures_unrestricted=apoc.* \
+  -e NEO4J_dbms_security_procedures_allowlist=apoc.* \
+  neo4j:latest
 ```
 
-Install the APOC plugin manually:
+### Install APOC Core in the Neo4j Container
+- Open Docker Desktop.
+- Locate the `neo4j-apoc` container.
+- Open the container's terminal (Exec) and run the following command:
 
 ```bash
-docker exec neo4j-apoc cp /var/lib/neo4j/labs/apoc-5.26.0-core.jar /var/lib/neo4j/plugins/
+cp /var/lib/neo4j/labs/apoc-5.26.0-core.jar /var/lib/neo4j/plugins/
 ```
 
-#### 4. Loading Data
-Move to the ETL directory and execute the data-loading script:
+## Loading Data
+Navigate to the ETL directory and execute the data-loading script:
 
 ```bash
 cd hospital_neo4j_etl/src
 python hospital_bulk_csv_write.py
 ```
 
-#### 5. Starting the Services
-Launch the backend API:
+## Starting the Application
 
+### Start the FastAPI Backend
 ```bash
 cd chatbot_api/src
 uvicorn main:app --host 0.0.0.0 --port 8000
 ```
 
-Start the frontend application:
-
+### Start the Streamlit Frontend
+In a new terminal:
 ```bash
 cd chatbot_frontend/src
 streamlit run main.py
 ```
 
-#### 6. Accessing the Application
-- Backend API documentation: [http://localhost:8000/docs](http://localhost:8000/docs)
-- Frontend chatbot interface: [http://localhost:8501/](http://localhost:8501/)
+## Accessing the Application
+- Neo4j Browser: [http://localhost:7474](http://localhost:7474)
+- FastAPI Backend: [http://localhost:8000](http://localhost:8000)
+- Streamlit Frontend: [http://localhost:8501](http://localhost:8501)
 
-### Sample Questions
-Test the chatbot with these queries:
+## Project Structure
+```
+RAG-Chatbot/
+├── chatbot_api/          # FastAPI backend
+├── chatbot_frontend/     # Streamlit frontend
+├── chroma_data/         # Vector store data
+├── data/                # Raw data files
+├── hospital_neo4j_etl/  # ETL scripts
+├── langchain_intro/     # LangChain setup
+├── tests/              # Test files
+└── requirements.txt    # Project dependencies
+```
+
+## Sample Questions
+Test the chatbot with the following queries:
 - "What hospitals are available in the system?"
 - "What was the billing amount for patient 789's stay?"
