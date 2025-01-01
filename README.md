@@ -8,15 +8,15 @@ A chatbot solution leveraging Neo4j, FastAPI, and Streamlit to provide natural l
 - OpenAI API Key
 - Git
 
-## Installation and Setup
+## I- Installation and Setup
 
-### Clone the Repository
+### 1- Clone the Repository
 ```bash
 git clone https://github.com/TahirRida/RAG-Chatbot
 cd RAG-Chatbot
 ```
 
-### Create and Activate a Virtual Environment
+### 2- Create and Activate a Virtual Environment
 ```bash
 python -m venv venv
 # On Windows:
@@ -25,12 +25,12 @@ python -m venv venv
 source venv/bin/activate
 ```
 
-### Install Required Packages
+### 3- Install Required Packages
 ```bash
 pip install -r requirements.txt
 ```
 
-### Create an Environment Configuration File
+### 4- Create an Environment Configuration File
 Create a `.env` file in the root directory with the following content:
 
 ```env
@@ -60,9 +60,9 @@ CHATBOT_URL=http://host.docker.internal:8000/hospital-rag-agent
 
 Update this file with your OpenAI API Key and adjust the Neo4j credentials to match the configuration used in subsequent steps.
 
-## Setting Up Neo4j
+## II- Setting Up Neo4j
 
-### Start Neo4j Container with APOC Plugin
+### 1- Start Neo4j Container with APOC Plugin
 ```bash
 docker run --name neo4j-apoc \
   -e NEO4J_AUTH=neo4j/password \
@@ -76,7 +76,7 @@ docker run --name neo4j-apoc \
   neo4j:latest
 ```
 
-### Install APOC Core in the Neo4j Container
+### 2- Install APOC Core in the Neo4j Container
 - Open Docker Desktop.
 - Locate the `neo4j-apoc` container.
 - Open the container's terminal (Exec) and run the following command:
@@ -85,7 +85,7 @@ docker run --name neo4j-apoc \
 cp /var/lib/neo4j/labs/apoc-5.26.0-core.jar /var/lib/neo4j/plugins/
 ```
 
-## Loading Data
+## III- Loading Data
 Navigate to the ETL directory and execute the data-loading script:
 
 ```bash
@@ -93,22 +93,22 @@ cd hospital_neo4j_etl/src
 python hospital_bulk_csv_write.py
 ```
 
-## Starting the Application
+## IV- Starting the Application
 
-### Start the FastAPI Backend
+### 1- Start the FastAPI Backend
 ```bash
 cd chatbot_api/src
 uvicorn main:app --host 0.0.0.0 --port 8000
 ```
 
-### Start the Streamlit Frontend
+### 2- Start the Streamlit Frontend
 In a new terminal:
 ```bash
 cd chatbot_frontend/src
 streamlit run main.py
 ```
 
-## Accessing the Application
+## V- Accessing the Application
 - Neo4j Browser: [http://localhost:7474](http://localhost:7474)
 - FastAPI Backend: [http://localhost:8000](http://localhost:8000)
 - Streamlit Frontend: [http://localhost:8501](http://localhost:8501)
