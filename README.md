@@ -12,7 +12,7 @@ A chatbot solution leveraging Neo4j, FastAPI, and Streamlit to provide natural l
 
 ### 1- Clone the Repository
 ```bash
-git clone [https://github.com/TahirRida/RAG-Chatbot](https://github.com/AmjedChakhis/chatbot-RAG)
+git clone https://github.com/AmjedChakhis/chatbot-RAG
 cd chatbot
 ```
 
